@@ -1,37 +1,187 @@
-📚 API Endpoints and Body Requirements
-Authentication APIs (/auth)
-Endpoint	Method	Body
-/register	POST	json { "userName": "string (3-20 chars)", "email": "valid email", "password": "string", "confirmPassword": "same as password" }
-/login	POST	json { "email": "valid email", "password": "string" }
-/forgetCode	PATCH	json { "email": "valid email" }
-/resetPassword	PATCH	json { "email": "valid email", "forgetCode": "5 characters code", "password": "string", "confirmPassword": "same as password" }
-Cart APIs (/cart)
-Endpoint	Method	Body
-/ (Add to cart)	POST	json { "productId": "valid MongoDB ID", "quantity": number (min 1) }
-/ (Get user cart)	GET	No body required.
-Optional query param: cartId
-/:productId (Remove from cart / Decrease quantity)	PATCH	json { "productId": "valid MongoDB ID" }
-/ (Clear cart)	PUT	No body required.
-Order APIs (/order)
-Endpoint	Method	Body
-/ (Create order)	POST	json { "phone": "string", "address": "string", "payment": "cash" or "visa" }
-/:id (Cancel order)	PATCH	json { "id": "valid MongoDB ID" }
-Product APIs (/product)
-Endpoint	Method	Body
-/ (Create product)	POST	Form-Data (not JSON):
-- name: string (2-20 chars)
-- description: string (10-200 chars) (optional)
-- availableItems: integer (>=1)
-- price: integer (>=1)
-- productImage: file (image upload)
-/:id (Delete product)	DELETE	json { "id": "valid MongoDB ID" }
-/ (Get products)	GET	No body required.
-📌 Notes
-confirmPassword must match password exactly in register and resetPassword endpoints.
+# 📚 Electronic Store - API Documentation
 
-For creating a product, use multipart/form-data because it includes a file upload (productImage).
+## Table of Contents
+- [Authentication APIs](#authentication-apis-auth)
+- [Cart APIs](#cart-apis-cart)
+- [Order APIs](#order-apis-order)
+- [Product APIs](#product-apis-product)
+- [Notes](#notes)
 
-MongoDB Object IDs must be valid (24 hexadecimal characters).
+---
 
-You must be authenticated (Bearer Token) for Cart, Order, and Product actions like create or delete.
+## Authentication APIs (`/auth`)
+
+### 📌 Register a new user
+- **Endpoint:** `POST /auth/register`
+- **Body:**
+  ```json
+  {
+    "userName": "string (3-20 chars)",
+    "email": "valid email",
+    "password": "string",
+    "confirmPassword": "same as password"
+  }
+  ```
+
+### 📌 Login
+- **Endpoint:** `POST /auth/login`
+- **Body:**
+  ```json
+  {
+    "email": "valid email",
+    "password": "string"
+  }
+  ```
+
+### 📌 Send forget code
+- **Endpoint:** `PATCH /auth/forgetCode`
+- **Body:**
+  ```json
+  {
+    "email": "valid email"
+  }
+  ```
+
+### 📌 Reset password
+- **Endpoint:** `PATCH /auth/resetPassword`
+- **Body:**
+  ```json
+  {
+    "email": "valid email",
+    "forgetCode": "5 characters code",
+    "password": "string",
+    "confirmPassword": "same as password"
+  }
+  ```
+
+---
+
+## Cart APIs (`/cart`)
+
+### 📌 Add product to cart
+- **Endpoint:** `POST /cart`
+- **Body:**
+  ```json
+  {
+    "productId": "valid MongoDB ObjectId",
+    "quantity": number (min 1)
+  }
+  ```
+
+### 📌 Get user cart
+- **Endpoint:** `GET /cart`
+- **Query Params (Optional):** `cartId`
+
+### 📌 Remove product from cart
+- **Endpoint:** `PATCH /cart/:productId`
+- **Body:**
+  ```json
+  {
+    "productId": "valid MongoDB ObjectId"
+  }
+  ```
+
+### 📌 Clear cart
+- **Endpoint:** `PUT /cart`
+- **Body:** _No body required._
+
+---
+
+## Order APIs (`/order`)
+
+### 📌 Create new order
+- **Endpoint:** `POST /order`
+- **Body:**
+  ```json
+  {
+    "phone": "string",
+    "address": "string",
+    "payment": "cash" or "visa"
+  }
+  ```
+
+### 📌 Cancel order
+- **Endpoint:** `PATCH /order/:id`
+- **Body:**
+  ```json
+  {
+    "id": "valid MongoDB ObjectId"
+  }
+  ```
+
+---
+
+## Product APIs (`/product`)
+
+### 📌 Create new product
+- **Endpoint:** `POST /product`
+- **Body (Form-Data, not JSON):**
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `name` | string (2-20 chars) | Required |
+| `description` | string (10-200 chars) | Optional |
+| `availableItems` | integer (>=1) | Required |
+| `price` | integer (>=1) | Required |
+| `productImage` | file (image) | Required |
+
+> 🔥 **Note:** Use `multipart/form-data` for this endpoint because it includes an image upload.
+
+### 📌 Delete a product
+- **Endpoint:** `DELETE /product/:id`
+- **Body:**
+  ```json
+  {
+    "id": "valid MongoDB ObjectId"
+  }
+  ```
+
+### 📌 Get all products
+- **Endpoint:** `GET /product`
+- **Body:** _No body required._
+
+---
+
+# 📌 Notes
+- `confirmPassword` must exactly match `password` for registration and resetting password.
+- **Authentication (Bearer Token)** is required for Cart, Order, and Product creation actions.
+- All IDs must be valid **MongoDB ObjectIds** (24 hexadecimal characters).
+- Use a tool like **Postman** or **Insomnia** for testing file uploads.
+
+---
+
+# 📂 Example Usage
+
+To add a product:
+```bash
+POST /product
+token: YOUR_TOKEN
+Content-Type: multipart/form-data
+```
+
+---
+
+# 📅 Project Setup
+
+1. Clone the repository:
+```bash
+git clone git@github.com:yaramegawer/Electronic-store.git
+```
+2. Navigate to the project folder:
+```bash
+cd Electronic-store
+```
+3. Install dependencies:
+```bash
+npm install
+```
+4. Set up environment variables in a `.env` file (example: Stripe keys, database connection, JWT secrets).
+5. Start the development server:
+```bash
+npm run dev
+```
+
+---
+
+# 🌟 Happy Coding!
 
