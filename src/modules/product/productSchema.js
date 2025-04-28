@@ -6,10 +6,7 @@ export const createProduct=joi.object({
     description:joi.string().min(10).max(200),
     availableItems:joi.number().integer().min(1).required(),
     price:joi.number().integer().min(1).required(),
-    discount:joi.number().min(1).max(100),
-    category:joi.string().custom(isValidObjectId).required(),
-    subcategory:joi.string().custom(isValidObjectId).required(),
-    brand:joi.string().custom(isValidObjectId).required(),
+
 }).required();
 
 export const deleteProduct=joi.object({

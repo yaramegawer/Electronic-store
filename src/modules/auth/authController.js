@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken';
 import { sendEmail } from './../../utils/sendEmails.js';
 import { Token } from './../../../DB/models/token.js';
 import randomstring from 'randomstring';
-import { Cart } from '../../../DB/models/cartModel.js';
 
 const register=asyncHandler(async(req,res,next)=>{
     //data from request
@@ -14,44 +13,19 @@ const register=asyncHandler(async(req,res,next)=>{
     //check user existence
     const user=await User.findOne({email});
     if(user) return next(new Error("User already exists",{cause:409}));
-    // //hash password
-    // const hashPassword=bcrypt.hashSync(password,parseInt(process.env.SALT_ROUND));
-    //generate token
-    const token=jwt.sign({email},process.env.SECRET_KEY)
+     //hash password
+    const hashPassword=bcrypt.hashSync(password,parseInt(process.env.SALT_ROUND));
+   
     //create user
-    await User.create({...req.body/*,password:hashPassword*/});
+    await User.create({...req.body,password:hashPassword});
     //create confirmationLink
-    const confirmationLink=`http://localhost:3000/auth/activate_account/${token}`;
-
-
-    //send email
-    const messageSent=await sendEmail({to:email,subject:"Activate account",html:`<a href=${confirmationLink}>Activate account</a>`});
-    if(!messageSent) return next(new Error("Something went wrong!"))
-    //send response
+   
     return res.status(201).json({
         success:true,
-        message:"Check your email"
+        message:"User created successfully"
     })
 });
 
-const activateAccount=asyncHandler(async(req,res,next)=>{
-    //get token
-    const {token}=req.params;
-    const {email}=jwt.verify(token,process.env.SECRET_KEY);
-    
-    //find user,update isConfirmed
-    const user=await User.findOneAndUpdate({email},{isConfirmed:true});
-    //check if the user doesn't exist
-    if(!user) return next(new Error("User not found!",{cause:404}));
-    //create a cart 
-    await Cart.create({user:user._id});
-
-    //send response
-    return res.status(200).json({
-        success:true,
-        message:"Try to login!"
-    })
-});
 
 const login=asyncHandler(async(req,res,next)=>{
     //data from request
@@ -59,19 +33,16 @@ const login=asyncHandler(async(req,res,next)=>{
     //check user existence
     const user=await User.findOne({email});
     if(!user) return next(new Error("Invalid email!",{cause:404}));
-    //check is confirmed
-    if(!user.isConfirmed) return next(new Error("You must activate your account first!"));
-    //check password
-    const match=bcrypt.compareSync(password,user.password);
-    if(!match) return next(new Error("Invalid Password!"))
-    //generate token
+
+//generate token
     const token=jwt.sign({email,id:user._id},process.env.SECRET_KEY);
     //save token in token model
     await Token.create({token,user:user._id});
     //send response
     return res.json({
         success:true,
-        message:"User logged in successfully"
+        message:"User logged in successfully",
+        token:token
     })
 });
 //forgetCode
@@ -81,9 +52,7 @@ const forgetCode=asyncHandler(async(req,res,next)=>{
     //check user existence
     const user=await User.findOne({email});
     if(!user) return next(new Error("User not found!",{cause:404}));
-    //check is confirmed
-    if(!user.isConfirmed) return next(new Error("You must activate your account first!"));
-    //generate forgetCode
+      //generate forgetCode
     const forgetCode=randomstring.generate({
         charset:"numeric",
         length:5
@@ -130,4 +99,4 @@ const resetPassword=asyncHandler(async(req,res,next)=>{
         message:"Try to login now"
     });
 });
-export {register,activateAccount,login,forgetCode,resetPassword};
+export {register,login,forgetCode,resetPassword};

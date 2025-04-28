@@ -7,8 +7,6 @@ import { validation } from './../../middleware/validationMiddleware.js';
 
 //Register
 router.post("/register",validation(authSchema.register),authController.register)
-//Activate account
-router.get("/activate_account/:token",validation(authSchema.activateAccount),authController.activateAccount);
 //Login
 router.post('/login',validation(authSchema.login),authController.login);
 //Send forget code

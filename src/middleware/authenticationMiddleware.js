@@ -7,10 +7,7 @@ dotenv.config();
 export const isAuthenticated=asyncHandler(async(req,res,next)=>{
     //check token existence
     let token =req.headers["token"];
-    //check bearer key
-    if(!token || !token.startsWith( process.env.BEARER_KEY)) return next(new Error("valid token is required!"));
-    //extract payload
-    token=token.split(process.env.BEARER_KEY)[1];
+//extract payload
     const payload=jwt.verify(token,process.env.SECRET_KEY)
     ///check token in DB
     const tokenDB=await Token.findOne({token,isValid:true});
