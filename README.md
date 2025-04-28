@@ -8,7 +8,8 @@ Endpoint	Method	Body
 Cart APIs (/cart)
 Endpoint	Method	Body
 / (Add to cart)	POST	json { "productId": "valid MongoDB ID", "quantity": number (min 1) }
-/ (Get user cart)	GET	No body required. Optional query param: cartId
+/ (Get user cart)	GET	No body required.
+Optional query param: cartId
 /:productId (Remove from cart / Decrease quantity)	PATCH	json { "productId": "valid MongoDB ID" }
 / (Clear cart)	PUT	No body required.
 Order APIs (/order)
@@ -17,15 +18,20 @@ Endpoint	Method	Body
 /:id (Cancel order)	PATCH	json { "id": "valid MongoDB ID" }
 Product APIs (/product)
 Endpoint	Method	Body
-/ (Create product)	POST	Form-Data (not JSON) <ul><li>name: string (2-20 chars)</li><li>description: string (10-200 chars) (optional)</li><li>availableItems: integer (>=1)</li><li>price: integer (>=1)</li><li>productImage: file (image upload)</li></ul>
+/ (Create product)	POST	Form-Data (not JSON):
+- name: string (2-20 chars)
+- description: string (10-200 chars) (optional)
+- availableItems: integer (>=1)
+- price: integer (>=1)
+- productImage: file (image upload)
 /:id (Delete product)	DELETE	json { "id": "valid MongoDB ID" }
 / (Get products)	GET	No body required.
 📌 Notes
 confirmPassword must match password exactly in register and resetPassword endpoints.
 
-For creating a product, use multipart/form-data (because of file upload).
+For creating a product, use multipart/form-data because it includes a file upload (productImage).
 
 MongoDB Object IDs must be valid (24 hexadecimal characters).
 
-Make sure to be authenticated (Bearer Token) for cart, order, and product creation actions.
+You must be authenticated (Bearer Token) for Cart, Order, and Product actions like create or delete.
 
