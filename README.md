@@ -113,29 +113,6 @@
 
 ## Product APIs (`/product`)
 
-### 📌 Create new product
-- **Endpoint:** `POST /product`
-- **Body (Form-Data, not JSON):**
-
-| Field | Type | Description |
-|:------|:-----|:------------|
-| `name` | string (2-20 chars) | Required |
-| `description` | string (10-200 chars) | Optional |
-| `availableItems` | integer (>=1) | Required |
-| `price` | integer (>=1) | Required |
-| `productImage` | file (image) | Required |
-
-> 🔥 **Note:** Use `multipart/form-data` for this endpoint because it includes an image upload.
-
-### 📌 Delete a product
-- **Endpoint:** `DELETE /product/:id`
-- **Body:**
-  ```json
-  {
-    "id": "valid MongoDB ObjectId"
-  }
-  ```
-
 ### 📌 Get all products
 - **Endpoint:** `GET /product`
 - **Body:** _No body required._
@@ -150,10 +127,113 @@ Example Request:
 GET /product?keyword=shirt&sort=price
 
 ---
+## Admin APIs (`/admin`)
+### 📌 Register a new user
+- **Endpoint:** `POST /admin/register`
+- **Body:**
+  ```json
+  {
+    "name": "string (3-20 chars)",
+    "email": "valid email",
+    "password": "string",
+    "confirmPassword": "same as password"
+  }
+  ```
+
+### 📌 Login
+- **Endpoint:** `POST /admin/login`
+- **Body:**
+  ```json
+  {
+    "email": "valid email",
+    "password": "string"
+  }
+  ```
+
+### 📌 Send forget code
+- **Endpoint:** `PATCH /admin/forgetCode`
+- **Body:**
+  ```json
+  {
+    "email": "valid email"
+  }
+  ```
+
+### 📌 Reset password
+- **Endpoint:** `PATCH /admin/resetPassword`
+- **Body:**
+  ```json
+  {
+    "email": "valid email",
+    "forgetCode": "5 characters code",
+    "password": "string",
+    "confirmPassword": "same as password"
+  }
+  ```
+
+### 📌 Create new product
+- **Endpoint:** `POST /admin/product`
+- **Body (Form-Data, not JSON):**
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `name` | string (2-20 chars) | Required |
+| `description` | string (10-200 chars) | Optional |
+| `availableItems` | integer (>=1) | Required |
+| `price` | integer (>=1) | Required |
+| `productImage` | file (image) | Required |
+
+> 🔥 **Note:** Use `multipart/form-data` for this endpoint because it includes an image upload.
+
+### 📌 Delete a product
+- **Endpoint:** `DELETE /admin/product/:id`
+- **Body:**
+  ```json
+  {
+    "id": "valid MongoDB ObjectId"
+  }
+  ```
+
+  ### 📌 Cancel order
+- **Endpoint:** `PATCH /order/:id`
+- **Body:**
+  ```json
+  {
+    "id": "valid MongoDB ObjectId"
+  }
+  ```
+### 📌 Get all products
+- **Endpoint:** `GET /product`
+- **Body:** _No body required._
+- Query Parameters (optional):
+
+### Delete a user
+Endpoint: DELETE /admin/deleteUser/:id
+
+Body: No body required.
+
+### 📌 Get all users
+Endpoint: GET /admin/getAllUsers
+
+Body: No body required.
+
+### 📌 Get all orders
+Endpoint: GET /admin/getAllOrders
+
+Body: No body required.
+
+### 📌 Update order status
+Endpoint: PUT /admin/updateOrderStatus/:id
+
+Body:
+{
+  "status": "placed" | "shipped" | "delivered" | "canceled" | "refunded"
+}
+
 
 # 📌 Notes
 - `confirmPassword` must exactly match `password` for registration and resetting password.
-- **Authentication (Bearer Token)** is required for Cart, Order, and Product creation actions.
+-Authentication token required for Cart, Order, Product creation, and all Admin actions.
 - All IDs must be valid **MongoDB ObjectIds** (24 hexadecimal characters).
 - Use a tool like **Postman** or **Insomnia** for testing file uploads.
 
@@ -167,6 +247,8 @@ POST /product
 token: YOUR_TOKEN
 Content-Type: multipart/form-data
 ```
+
+
 
 ---
 
