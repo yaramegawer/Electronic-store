@@ -139,6 +139,15 @@
 ### 📌 Get all products
 - **Endpoint:** `GET /product`
 - **Body:** _No body required._
+- Query Parameters (optional):
+
+keyword (string): Filter products based on a search keyword (e.g., product name or description).
+
+sort (string): Sort products by a specific field. Common values might include price, name, etc. (Use - for descending, e.g., -price)
+
+Example Request:
+
+GET /product?keyword=shirt&sort=price
 
 ---
 
