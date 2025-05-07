@@ -1,96 +1,278 @@
-# E-Commerce Website Backend
+# 📚 Electronic Store - API Documentation
 
-## Overview
+## Table of Contents
+- [Authentication APIs](#authentication-apis-auth)
+- [Cart APIs](#cart-apis-cart)
+- [Order APIs](#order-apis-order)
+- [Product APIs](#product-apis-product)
+- [Notes](#notes)
 
-This is the backend for the e-commerce website, built using Node.js and Express.js. It provides APIs for user authentication, product management, cart functionality, and order processing.
+---
 
-## Features
+## Authentication APIs (`/auth`)
 
-- **User Authentication**: Register, log in, and log out with JWT-based authentication.
-- **Product Management**: Create, update, delete, and list products.
-- **Shopping Cart**: Manage users' shopping cart with add, update, and delete items.
-- **Order Processing**: Place and track orders.
-- **Admin Panel**: Manage users and products (if applicable).
+### 📌 Register a new user
+- **Endpoint:** `POST /auth/register`
+- **Body:**
+  ```json
+  {
+    "userName": "string (3-20 chars)",
+    "email": "valid email",
+    "password": "string",
+    "confirmPassword": "same as password"
+  }
+  ```
 
-## Technologies Used
+### 📌 Login
+- **Endpoint:** `POST /auth/login`
+- **Body:**
+  ```json
+  {
+    "email": "valid email",
+    "password": "string"
+  }
+  ```
 
-- **Node.js**: JavaScript runtime environment
-- **Express.js**: Web framework for Node.js
-- **MongoDB**: NoSQL database for storing products, users, orders, and cart data
-- **JWT**: JSON Web Tokens for user authentication
-- **Mongoose**: ODM (Object Data Modeling) library for MongoDB and Node.js
-- **Stripe**: For payment gateway integration (optional)
+### 📌 Send forget code
+- **Endpoint:** `PATCH /auth/forgetCode`
+- **Body:**
+  ```json
+  {
+    "email": "valid email"
+  }
+  ```
 
-## Setup
+### 📌 Reset password
+- **Endpoint:** `PATCH /auth/resetPassword`
+- **Body:**
+  ```json
+  {
+    "email": "valid email",
+    "forgetCode": "5 characters code",
+    "password": "string",
+    "confirmPassword": "same as password"
+  }
+  ```
 
-To set up the backend locally, follow these steps:
+---
 
-### Prerequisites
+## Cart APIs (`/cart`)
 
-- Node.js
-- npm or yarn
-- MongoDB (or a cloud database like MongoDB Atlas)
+### 📌 Add product to cart
+- **Endpoint:** `POST /cart`
+- **Body:**
+  ```json
+  {
+    "productId": "valid MongoDB ObjectId",
+    "quantity": number (min 1)
+  }
+  ```
 
-### Installation
+### 📌 Get user cart
+- **Endpoint:** `GET /cart`
+- **Query Params (Optional):** `cartId`
+
+### 📌 Remove product from cart
+- **Endpoint:** `PATCH /cart/:productId`
+- **Body:**
+  ```json
+  {
+    "productId": "valid MongoDB ObjectId"
+  }
+  ```
+
+### 📌 Clear cart
+- **Endpoint:** `PUT /cart`
+- **Body:** _No body required._
+
+---
+
+## Order APIs (`/order`)
+
+### 📌 Create new order
+- **Endpoint:** `POST /order`
+- **Body:**
+  ```json
+  {
+    "phone": "string",
+    "address": "string",
+    "payment": "cash" or "visa"
+  }
+  ```
+
+### 📌 Cancel order
+- **Endpoint:** `PATCH /order/:id`
+- **Body:**
+  ```json
+  {
+    "id": "valid MongoDB ObjectId"
+  }
+  ```
+
+---
+
+## Product APIs (`/product`)
+
+### 📌 Get all products
+- **Endpoint:** `GET /product`
+- **Body:** _No body required._
+- Query Parameters (optional):
+
+keyword (string): Filter products based on a search keyword (e.g., product name or description).
+
+sort (string): Sort products by a specific field. Common values might include price, name, etc. (Use - for descending, e.g., -price)
+
+Example Request:
+
+GET /product?keyword=shirt&sort=price
+
+---
+## Admin APIs (`/admin`)
+### 📌 Register a new user
+- **Endpoint:** `POST /admin/register`
+- **Body:**
+  ```json
+  {
+    "name": "string (3-20 chars)",
+    "email": "valid email",
+    "password": "string",
+    "confirmPassword": "same as password"
+  }
+  ```
+
+### 📌 Login
+- **Endpoint:** `POST /admin/login`
+- **Body:**
+  ```json
+  {
+    "email": "valid email",
+    "password": "string"
+  }
+  ```
+
+### 📌 Send forget code
+- **Endpoint:** `PATCH /admin/forgetCode`
+- **Body:**
+  ```json
+  {
+    "email": "valid email"
+  }
+  ```
+
+### 📌 Reset password
+- **Endpoint:** `PATCH /admin/resetPassword`
+- **Body:**
+  ```json
+  {
+    "email": "valid email",
+    "forgetCode": "5 characters code",
+    "password": "string",
+    "confirmPassword": "same as password"
+  }
+  ```
+
+### 📌 Create new product
+- **Endpoint:** `POST /admin/product`
+- **Body (Form-Data, not JSON):**
+
+| Field | Type | Description |
+|:------|:-----|:------------|
+| `name` | string (2-20 chars) | Required |
+| `description` | string (10-200 chars) | Optional |
+| `availableItems` | integer (>=1) | Required |
+| `price` | integer (>=1) | Required |
+| `productImage` | file (image) | Required |
+
+> 🔥 **Note:** Use `multipart/form-data` for this endpoint because it includes an image upload.
+
+### 📌 Delete a product
+- **Endpoint:** `DELETE /admin/product/:id`
+- **Body:**
+  ```json
+  {
+    "id": "valid MongoDB ObjectId"
+  }
+  ```
+
+  ### 📌 Cancel order
+- **Endpoint:** `PATCH /order/:id`
+- **Body:**
+  ```json
+  {
+    "id": "valid MongoDB ObjectId"
+  }
+  ```
+### 📌 Get all products
+- **Endpoint:** `GET /product`
+- **Body:** _No body required._
+- Query Parameters (optional):
+
+### Delete a user
+Endpoint: DELETE /admin/deleteUser/:id
+
+Body: No body required.
+
+### 📌 Get all users
+Endpoint: GET /admin/getAllUsers
+
+Body: No body required.
+
+### 📌 Get all orders
+Endpoint: GET /admin/getAllOrders
+
+Body: No body required.
+
+### 📌 Update order status
+Endpoint: PUT /admin/updateOrderStatus/:id
+
+Body:
+{
+  "status": "placed" | "shipped" | "delivered" | "canceled" | "refunded"
+}
+
+
+# 📌 Notes
+- `confirmPassword` must exactly match `password` for registration and resetting password.
+-Authentication token required for Cart, Order, Product creation, and all Admin actions.
+- All IDs must be valid **MongoDB ObjectIds** (24 hexadecimal characters).
+- Use a tool like **Postman** or **Insomnia** for testing file uploads.
+
+---
+
+# 📂 Example Usage
+
+To add a product:
+```bash
+POST /product
+token: YOUR_TOKEN
+Content-Type: multipart/form-data
+```
+
+
+
+---
+
+# 📅 Project Setup
 
 1. Clone the repository:
+```bash
+git clone git@github.com:yaramegawer/Electronic-store.git
+```
+2. Navigate to the project folder:
+```bash
+cd Electronic-store
+```
+3. Install dependencies:
+```bash
+npm install
+```
+4. Set up environment variables in a `.env` file (example: Stripe keys, database connection, JWT secrets).
+5. Start the development server:
+```bash
+npm run dev
+```
 
-    ```bash
-    git clone https://github.com/yourusername/e-commerce-backend.git
-    cd e-commerce-backend
-    ```
+---
 
-2. Install dependencies:
+# 🌟 Happy Coding!
 
-    ```bash
-    npm install
-    ```
-
-3. Set up environment variables:
-
-    Create a `.env` file in the root directory and add the following:
-
-    ```bash
-    DB_URI=your-mongodb-uri
-    JWT_SECRET=your-secret-key
-    STRIPE_SECRET_KEY=your-stripe-secret-key  # Optional
-    ```
-
-4. Start the server:
-
-    ```bash
-    npm start
-    ```
-
-    The server will start on `http://localhost:5000`.
-
-### Available API Endpoints
-
-- **POST /auth/register**: Register a new user
-- **POST /auth/login**: Log in and obtain a JWT token
-- **GET /product**: List all products
-- **GET /product/:id**: Get a product by ID
-- **POST /product**: Add a new product (Admin only)
-- **PUT /product/:id**: Update an existing product (Admin only)
-- **DELETE /product/:id**: Delete a product (Admin only)
-- **GET /cart**: Get the user's cart
-- **POST /cart**: Add an item to the cart
-- **PUT /cart/:itemId**: Update the cart item quantity
-- **DELETE /cart/:itemId**: Remove an item from the cart
-- **POST /order**: Place a new order
-
-## Contributing
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Make your changes and commit them (`git commit -am 'Add new feature'`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Create a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgements
-
-- Express.js, MongoDB, and JWT for the foundational tools in this project.
