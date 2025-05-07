@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { Token } from "../../DB/models/token.js";
 import { User } from "../../DB/models/user.js";
+import { Admin } from "../../DB/models/adminModel.js";
 dotenv.config();
 export const isAuthenticated=asyncHandler(async(req,res,next)=>{
     //check token existence
@@ -14,9 +15,13 @@ export const isAuthenticated=asyncHandler(async(req,res,next)=>{
     if(!tokenDB) return next(new Error("Token invalid!"))
     //check user existence
     const user= await User.findById(payload.id);
-    if(!user) return next(new Error("User not found!",{cause:404}));
+    const admin=await Admin.findById(payload.id);
+
+    if(!user && !admin) return next(new Error("User or admin not found!",{cause:404}));
+
     //pass user
     req.user=user;
+    req.admin=admin;
     //next()
     return next();
 });

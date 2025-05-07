@@ -7,6 +7,7 @@ import authRouter from './src/modules/auth/authRouter.js';
 import productRouter from './src/modules/product/productRouter.js';
 import cartRouter from './src/modules/cart/cartRouter.js';
 import orderRouter from './src/modules/order/orderRouter.js';
+import adminRouter from './src/modules/admin/adminRouter.js';
 import cors from 'cors';
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use('/auth',authRouter);
 app.use('/product',productRouter);
 app.use('/cart',cartRouter);
 app.use('/order',orderRouter);
+app.use('/admin',adminRouter);
 app.all('*', (req, res,next) =>{
     return next(new Error("Page not found",{cause:404}));
 })

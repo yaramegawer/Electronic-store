@@ -1,7 +1,7 @@
 import { Schema,model } from "mongoose";
 
-const userSchema=new Schema({
-    userName:{
+const adminSchema=new Schema({
+    name:{
         type:String,
         required:true,
         min:3,
@@ -17,11 +17,7 @@ const userSchema=new Schema({
         type:String,
         required:true
     },
-
-    phone:{
-        type:String
-    },
     forgetCode:String,
    },{timestamps:true});
 
-export const User=model("User",userSchema);
+export const Admin=model("Admin",adminSchema);

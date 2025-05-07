@@ -16,7 +16,7 @@ export const createProduct=asyncHandler(async(req,res,next)=>{
     const {secure_url,public_id}=await cloudinary.uploader.upload(req.files.productImage[0].path,{folder:`${process.env.CLOUD_FOLDER_NAME}/products/${cloudFolder}`});
 
     //create product
-    const product=await Product.create({...req.body,cloudFolder,createdBy:req.user._id,productImage:{url:secure_url,id:public_id}});
+    const product=await Product.create({...req.body,cloudFolder,createdBy:req.admin._id,productImage:{url:secure_url,id:public_id}});
 
     //send response
     return res.json({
