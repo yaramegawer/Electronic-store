@@ -27,15 +27,15 @@ export const createProduct=asyncHandler(async(req,res,next)=>{
 
 export const deleteProduct=asyncHandler(async(req,res,next)=>{
     //check product
-    const {p_id}=req.params;
-    const product=await Product.findById({p_id});
+    const {id}=req.params;
+    const product=await Product.findById(id);
     console.log(p_id)
     if(!product) return next(new Error("Product not found",{cause:404}));
     
 
   
-    const id=product.productImage.id;
-    await cloudinary.api.delete_resources(id);
+    const img_id=product.productImage.id;
+    await cloudinary.api.delete_resources(img_id);
     //delete folder
     await cloudinary.api.delete_folder(`${process.env.CLOUD_FOLDER_NAME}/products/${product.cloudFolder}`)
     
