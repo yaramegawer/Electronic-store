@@ -70,7 +70,6 @@ export const userCart=asyncHandler(async(req,res,next)=>{
         return res.json({success:true,results:{cart}});
     
 
-    const cart=await Cart.findById(req.body.cartId);
     return res.json({success:true,results:{cart}});
 });
 
