@@ -27,7 +27,8 @@ export const createProduct=asyncHandler(async(req,res,next)=>{
 
 export const deleteProduct=asyncHandler(async(req,res,next)=>{
     //check product
-    const product=await Product.findById(req.params.id);
+    const {p_id}=req.params;
+    const product=await Product.findById(p_id);
     if(!product) return next(new Error("Product not found",{cause:404}));
     
     //check owner
