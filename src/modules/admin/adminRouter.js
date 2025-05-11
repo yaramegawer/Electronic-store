@@ -16,7 +16,7 @@ router.post('/product',isAuthenticated,fileUpload().fields([
 ]),validation(productSchema.createProduct),productController.createProduct);
 
 //delete product
-router.delete('/product:id',isAuthenticated,validation(productSchema.deleteProduct),productController.deleteProduct);
+router.delete('/product:id',isAuthenticated,productController.deleteProduct);
 
 //get products
 router.get('/product',productController.allProducts);
