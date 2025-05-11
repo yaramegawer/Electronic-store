@@ -29,7 +29,6 @@ export const deleteProduct=asyncHandler(async(req,res,next)=>{
     //check product
     const {id}=req.params;
     const product=await Product.findById(id);
-    console.log(p_id)
     if(!product) return next(new Error("Product not found",{cause:404}));
     
 
