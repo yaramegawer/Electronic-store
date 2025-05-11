@@ -65,12 +65,11 @@ export const addToCart=asyncHandler(async(req,res,next)=>{
 
 
 export const userCart=asyncHandler(async(req,res,next)=>{
-    if(req.user.role=="user"){
+
         const cart=await Cart.findOne({user:req.user._id});
         return res.json({success:true,results:{cart}});
-    }
-    if(req.user.role=="admin" && !res.body.cartId)
-        return next(new Error("cart id is required!"));
+    
+
     const cart=await Cart.findById(req.body.cartId);
     return res.json({success:true,results:{cart}});
 });
