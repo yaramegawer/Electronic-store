@@ -8,7 +8,7 @@
 - [Notes](#notes)
 
 ---
-
+# Base -Url->https://electronic-store-tau.vercel.app/
 ## Authentication APIs (`/auth`)
 
 ### 📌 Register a new user
