@@ -40,7 +40,7 @@ export const addToCart=asyncHandler(async(req,res,next)=>{
       existingProduct.quantity = newQuantity;
     } else {
       // Push new product if not found in cart
-      cart.products.push({product});
+      cart.products.push({ product, quantity });
     }
 
     await cart.save();
@@ -52,7 +52,7 @@ export const addToCart=asyncHandler(async(req,res,next)=>{
     // Create a new cart for the user
     const newCart = await Cart.create({
       user: req.user._id,
-      products: [{product}],
+      products: [{ product, quantity }],
     });
 
     return res.json({
@@ -66,11 +66,11 @@ export const addToCart=asyncHandler(async(req,res,next)=>{
 
 export const userCart=asyncHandler(async(req,res,next)=>{
 
-        const cart=await Cart.findOne({user:req.user._id});
-        return res.json({success:true,results:{cart}});
-    
+    const cart=await Cart.findOne({user:req.user._id});
+
 
     return res.json({success:true,results:{cart}});
+    
 });
 
 
