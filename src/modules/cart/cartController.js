@@ -74,7 +74,7 @@ export const userCart=asyncHandler(async(req,res,next)=>{
 
   const productArray = await Promise.all(
     cart.products.map(async (item) => {
-      const fullProduct = await Product.findById(item.product._id || item.productId);
+      const fullProduct = await Product.findById( item.productId);
       return {
         product: fullProduct,
         quantity: item.quantity,
