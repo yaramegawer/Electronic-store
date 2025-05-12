@@ -23,10 +23,9 @@ export const addToCart=asyncHandler(async(req,res,next)=>{
   const cart = await Cart.findOne({ user: req.user._id });
 
   if (cart) {
-const existingProduct = cart.products.find(
-  (item) =>
-    item.product && item.product._id && item.product._id.toString() === productId.toString()
-);
+    const existingProduct = cart.products.find(
+      (item) => item.productId.toString() === productId.toString()
+    );
 
     if (existingProduct) {
       const newQuantity = existingProduct.quantity + quantity;
@@ -41,7 +40,7 @@ const existingProduct = cart.products.find(
       existingProduct.quantity = newQuantity;
     } else {
       // Push new product if not found in cart
-      cart.products.push({ product, quantity });
+      cart.products.push({ product, quantity,productId });
     }
 
     await cart.save();
@@ -53,7 +52,7 @@ const existingProduct = cart.products.find(
     // Create a new cart for the user
     const newCart = await Cart.create({
       user: req.user._id,
-      products: [{ product, quantity }],
+      products: [{ product, quantity ,productId}],
     });
 
     return res.json({
