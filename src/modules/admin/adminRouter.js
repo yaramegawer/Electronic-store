@@ -9,6 +9,16 @@ import { isAuthenticated } from "../../middleware/authenticationMiddleware.js";
 import { fileUpload } from "../../utils/fileUpload.js";
 import { validation } from "../../middleware/validationMiddleware.js";
 
+//Register
+router.post("/register",validation(adminSchema.register),adminController.register)
+//Login
+router.post('/login',validation(adminSchema.login),adminController.login);
+//Send forget code
+router.patch('/forgetCode',validation(adminSchema.forgetCode),adminController.forgetCode);
+//reset password
+router.patch('/resetPassword',validation(adminSchema.resetPassword),adminController.resetPassword);
+
+
 
 //create product
 router.post('/product',isAuthenticated,fileUpload().fields([
@@ -24,14 +34,6 @@ router.get('/product',productController.allProducts);
 //cancel order
 router.patch('/:id',isAuthenticated,validation(cancelOrder),cancelOrder)
 
-//Register
-router.post("/register",validation(adminSchema.register),adminController.register)
-//Login
-router.post('/login',validation(adminSchema.login),adminController.login);
-//Send forget code
-router.patch('/forgetCode',validation(adminSchema.forgetCode),adminController.forgetCode);
-//reset password
-router.patch('/resetPassword',validation(adminSchema.resetPassword),adminController.resetPassword);
 
 router.delete('/deleteUser/:id',isAuthenticated,adminController.deleteUser);
 
