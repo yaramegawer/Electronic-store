@@ -8,6 +8,7 @@ export const addToCart=asyncHandler(async(req,res,next)=>{
 
   // Check if product exists
   const product = await Product.findById(productId);
+  console.log(product);
   if (!product) {
     return next(new Error("Product not found!", { cause: 404 }));
   }
