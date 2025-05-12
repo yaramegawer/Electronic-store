@@ -71,9 +71,13 @@ export const userCart=asyncHandler(async(req,res,next)=>{
 
     const products= cart.products;
 
+    const productArray=[];
+    products.forEach(async (product)=>{
+      productArray=await Product.find(product.productId);
+    })
 
     
-    return res.json({success:true,products});
+    return res.json({success:true,cart:{cart,productArray}});
     
 });
 
