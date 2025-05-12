@@ -68,17 +68,21 @@ export const addToCart=asyncHandler(async(req,res,next)=>{
 export const userCart=asyncHandler(async(req,res,next)=>{
 
     const cart=await Cart.findOne({user:req.user._id});
+ if (!cart || cart.products.length === 0) {
+    return res.json({ success: true, cart: { cart: null, products: [] } });
+  }
 
-    const products= cart.products;
-
-    const productArray=[];
-    products.forEach(async (product)=>{
-      productArray=await Product.find(product.productId);
+  const productArray = await Promise.all(
+    cart.products.map(async (item) => {
+      const fullProduct = await Product.findById(item.product._id || item.productId);
+      return {
+        product: fullProduct,
+        quantity: item.quantity,
+      };
     })
+  );
 
-    
-    return res.json({success:true,cart:{cart,productArray}});
-    
+  return res.json({ success: true, cart: { cart, products: productArray } }); 
 });
 
 
