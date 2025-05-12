@@ -23,9 +23,10 @@ export const addToCart=asyncHandler(async(req,res,next)=>{
   const cart = await Cart.findOne({ user: req.user._id });
 
   if (cart) {
-    const existingProduct = cart.products.find(
-      (item) => item.productId.toString() === productId.toString()
-    );
+const existingProduct = cart.products.find(
+  (item) =>
+    item.product && item.product._id && item.product._id.toString() === productId.toString()
+);
 
     if (existingProduct) {
       const newQuantity = existingProduct.quantity + quantity;
